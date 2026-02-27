@@ -10,7 +10,11 @@
     "lint:js:fix": "eslint src/**/*.js --fix",
     "bundle": "node scripts/bundleZip.js",
     "version:update": "node scripts/updatePluginVersion.js",
-    "release": "bash scripts/create-release.sh"
+    "release": "bash scripts/create-release.sh",
+    "release:patch": "bash scripts/create-release.sh patch",
+    "release:minor": "bash scripts/create-release.sh minor",
+    "release:major": "bash scripts/create-release.sh major",
+    "release:zip": "bash scripts/create-release.sh --zip-only"
   },
   "keywords": [
     "wordpress",
