@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Create a new release with proper versioning and bundling
+# Usage:
+#   ./create-release.sh [patch|minor|major]  - Full release with versioning and git operations
+#   ./create-release.sh --zip-only           - Just create a zip of the current version
 
 set -e
 
@@ -8,9 +11,43 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
+BUNDLE_DIR=".release"
+
 echo -e "${BLUE}🚀 TPRT Site Switcher Plugin Release Creator${NC}"
+echo ""
+
+# Check for --zip-only flag
+if [ "$1" == "--zip-only" ]; then
+    echo -e "${YELLOW}📦 Zip-only mode: Creating zip from current version${NC}"
+    echo ""
+
+    # Get current version from package.json
+    CURRENT_VERSION=$(node -p "require('./package.json').version")
+    echo -e "Current version: ${GREEN}$CURRENT_VERSION${NC}"
+
+    # Build the production bundle
+    echo ""
+    echo -e "${BLUE}Building production bundle...${NC}"
+    pnpm run bundle
+
+    # Verify the bundle was created
+    BUNDLE_NAME="$BUNDLE_DIR/tprt-site-switcher-${CURRENT_VERSION}.zip"
+    if [ ! -f "$BUNDLE_NAME" ]; then
+        echo -e "${RED}Error: Bundle was not created${NC}"
+        exit 1
+    fi
+
+    echo ""
+    echo -e "${GREEN}✅ Zip file created successfully!${NC}"
+    echo -e "${BLUE}Plugin bundle: $BUNDLE_NAME${NC}"
+    exit 0
+fi
+
+# Full release mode - check git requirements
+echo -e "${YELLOW}🏷️  Full release mode: Creating new version with git operations${NC}"
 echo ""
 
 # Check if we're in a git repository
@@ -69,12 +106,13 @@ echo -e "${BLUE}Building production bundle...${NC}"
 pnpm run bundle
 
 # Verify the bundle was created
-if [ ! -f ".release/tprt-site-switcher-$NEW_VERSION.zip" ]; then
+BUNDLE_NAME="$BUNDLE_DIR/tprt-site-switcher-${NEW_VERSION}.zip"
+if [ ! -f "$BUNDLE_NAME" ]; then
     echo -e "${RED}Error: Bundle was not created${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}✓ Bundle created: .release/tprt-site-switcher-$NEW_VERSION.zip${NC}"
+echo -e "${GREEN}✓ Bundle created: $BUNDLE_NAME${NC}"
 
 # Add the version changes
 echo ""
@@ -93,12 +131,23 @@ echo -e "${BLUE}Pushing to GitHub...${NC}"
 git push origin $(git branch --show-current)
 git push origin "v$NEW_VERSION"
 
+# Create GitHub release with auto-generated notes and attach the zip
 echo ""
-echo -e "${GREEN}✅ Release created successfully!${NC}"
+echo -e "${BLUE}Creating GitHub release...${NC}"
+if command -v gh &> /dev/null; then
+    gh release create "v$NEW_VERSION" "$BUNDLE_NAME" \
+        --title "v$NEW_VERSION" \
+        --generate-notes
+    echo -e "${GREEN}✅ Release v$NEW_VERSION created and $BUNDLE_NAME uploaded${NC}"
+else
+    echo -e "${YELLOW}⚠️  gh CLI not installed. Skipping GitHub release creation.${NC}"
+    echo ""
+    echo "Manual steps:"
+    echo "  1. Go to GitHub and create a new release from tag v$NEW_VERSION"
+    echo "  2. Upload the $BUNDLE_NAME file"
+    echo "  3. Add release notes describing the changes"
+fi
+
 echo ""
-echo "Next steps:"
-echo "  1. Go to GitHub and create a new release from tag v$NEW_VERSION"
-echo "  2. Upload the .release/tprt-site-switcher-$NEW_VERSION.zip file"
-echo "  3. Add release notes describing the changes"
-echo ""
-echo -e "${BLUE}Plugin bundle: .release/tprt-site-switcher-$NEW_VERSION.zip${NC}"
+echo -e "${GREEN}✅ Release v$NEW_VERSION complete!${NC}"
+echo -e "${BLUE}Plugin bundle: $BUNDLE_NAME${NC}"
