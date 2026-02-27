@@ -1,0 +1,9 @@
+node_modules/
+vendor/
+build/
+.claude/
+.cursor/
+.vscode/
+.docs/
+.release/
+.DS_Store
