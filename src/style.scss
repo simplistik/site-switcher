@@ -512,6 +512,12 @@ $ss-transition: 150ms ease;
   z-index: 2;
   animation: tprt-ss-menu-in 100ms ease forwards;
 
+  &--above {
+    top: auto;
+    bottom: calc(100% + 4px);
+    animation: tprt-ss-menu-in-above 100ms ease forwards;
+  }
+
   &__item {
     display: block;
     width: 100%;
@@ -535,6 +541,17 @@ $ss-transition: 150ms ease;
   from {
     opacity: 0;
     transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tprt-ss-menu-in-above {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;

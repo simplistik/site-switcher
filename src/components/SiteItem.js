@@ -24,6 +24,7 @@ const SiteItem = ( {
   showBlogId,
 } ) => {
   const [ menuOpen, setMenuOpen ] = useState( false );
+  const [ menuAbove, setMenuAbove ] = useState( false );
   const menuRef = useRef( null );
   const kebabRef = useRef( null );
   const displayUrl = useMemo( () => formatUrl( site.siteUrl ), [ site.siteUrl ] );
@@ -41,7 +42,19 @@ const SiteItem = ( {
     ( e ) => {
       e.preventDefault();
       e.stopPropagation();
-      setMenuOpen( ( prev ) => !prev );
+      setMenuOpen( ( prev ) => {
+        if ( !prev && kebabRef.current ) {
+          const btn = kebabRef.current;
+          const list = btn.closest( '.tprt-ss-list' );
+          if ( list ) {
+            const listRect = list.getBoundingClientRect();
+            const btnRect = btn.getBoundingClientRect();
+            const spaceBelow = listRect.bottom - btnRect.bottom;
+            setMenuAbove( spaceBelow < 60 );
+          }
+        }
+        return !prev;
+      } );
     },
     [],
   );
@@ -102,6 +115,7 @@ const SiteItem = ( {
       className={className}
       data-index={index}
       onMouseEnter={() => onMouseEnter( index )}
+      onMouseLeave={() => setMenuOpen( false )}
       onClick={( e ) => {
         e.preventDefault();
         e.stopPropagation();
@@ -183,7 +197,7 @@ const SiteItem = ( {
           {menuOpen && (
             <div
               ref={menuRef}
-              className="tprt-ss-menu"
+              className={`tprt-ss-menu${menuAbove ? ' tprt-ss-menu--above' : ''}`}
               role="menu"
             >
               {MENU_ITEMS.map( ( item ) => (
