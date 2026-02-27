@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Site Switcher by The Taproot Agency
  * Description: Replaces the default multisite "My Sites" admin bar dropdown with a searchable command palette.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: The Taproot Agency
  * Author URI: https://taproot.agency
  * Text Domain: tprt-site-switcher
@@ -19,7 +19,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Define plugin constants
-define( 'TPRT_SITE_SWITCHER_VERSION', '1.0.0' );
+define( 'TPRT_SITE_SWITCHER_VERSION', '1.0.1' );
 define( 'TPRT_SITE_SWITCHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TPRT_SITE_SWITCHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
