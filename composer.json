@@ -1,0 +1,47 @@
+{
+  "name": "taprootagency/tprt-site-switcher",
+  "description": "Site Switcher by The Taproot Agency - Replaces the default multisite My Sites dropdown with a searchable command palette.",
+  "keywords": [
+    "wordpress",
+    "multisite",
+    "site-switcher",
+    "command-palette"
+  ],
+  "authors": [
+    {
+      "name": "The Taproot Agency",
+      "email": "lucas@taproot.agency",
+      "homepage": "https://taproot.agency"
+    }
+  ],
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpcsstandards/phpcsextra": "^1.1",
+    "phpcsstandards/phpcsutils": "^1.0",
+    "sirbrillig/phpcs-changed": "^2.11",
+    "sirbrillig/phpcs-variable-analysis": "^2.11",
+    "squizlabs/php_codesniffer": "^3.7",
+    "wp-coding-standards/wpcs": "^3.0"
+  },
+  "scripts": {
+    "php:lint": "vendor/bin/phpcs -p -s",
+    "php:lint:errors": "vendor/bin/phpcs -p -s --runtime-set ignore_warnings_on_exit 1",
+    "php:lint:autofix": "vendor/bin/phpcbf",
+    "php:lint:changed": "vendor/bin/phpcs-changed --git --git-unstaged",
+    "fix": "vendor/bin/php-cs-fixer fix"
+  },
+  "config": {
+    "vendor-dir": "vendor",
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
