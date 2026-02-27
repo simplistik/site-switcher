@@ -1,6 +1,6 @@
 {
   "name": "tprt-site-switcher",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Replaces the WordPress multisite My Sites dropdown with a searchable command palette",
   "main": "build/index.js",
   "scripts": {
