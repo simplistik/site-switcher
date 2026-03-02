@@ -105,6 +105,23 @@ class TPRT_Site_Switcher
   }
 
   /**
+   * Get the root domain to use for cross-subsite cookies.
+   *
+   * @return string
+   */
+  private function get_cookie_domain()
+  {
+    if ( defined( 'COOKIE_DOMAIN' ) && COOKIE_DOMAIN ) return COOKIE_DOMAIN;
+
+    $host = wp_parse_url( network_home_url(), PHP_URL_HOST );
+
+    // Strip leading dot if present, then prepend one for cross-subdomain scope
+    $host = ltrim( $host, '.' );
+
+    return '.' . $host;
+  }
+
+  /**
    * Build the localized data array for the JavaScript app.
    *
    * @return array
@@ -112,10 +129,11 @@ class TPRT_Site_Switcher
   private function get_localized_data()
   {
     $data = [
-      'sites'       => $this->get_user_sites_data(),
-      'currentSite' => get_current_blog_id(),
-      'userId'      => get_current_user_id(),
-      'isMultisite' => true,
+      'sites'        => $this->get_user_sites_data(),
+      'currentSite'  => get_current_blog_id(),
+      'userId'       => get_current_user_id(),
+      'isMultisite'  => true,
+      'cookieDomain' => $this->get_cookie_domain(),
     ];
 
     if ( is_super_admin() ) :
