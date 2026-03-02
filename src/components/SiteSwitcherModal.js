@@ -106,16 +106,6 @@ const SiteSwitcherModal = () => {
     };
   }, [ isOpen ] );
 
-  // Focus the admin bar item when closing
-  useEffect( () => {
-    if ( !isOpen ) {
-      const mySitesLink = document.querySelector(
-        '#wp-admin-bar-my-sites > .ab-item',
-      );
-      if ( mySitesLink ) mySitesLink.focus();
-    }
-  }, [ isOpen ] );
-
   if ( !isOpen ) return null;
 
   return (

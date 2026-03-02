@@ -9,6 +9,28 @@
 class TPRT_Site_Switcher
 {
   /**
+   * Append the keyboard shortcut hint to the My Sites admin bar item title.
+   *
+   * @param  WP_Admin_Bar $wp_admin_bar
+   * @return void
+   */
+  public function append_shortcut_to_my_sites( $wp_admin_bar )
+  {
+    if ( !is_admin_bar_showing() ) return;
+    if ( !is_user_logged_in() ) return;
+
+    $node = $wp_admin_bar->get_node( 'my-sites' );
+    if ( !$node ) return;
+
+    $shortcut = '<kbd class="tprt-ss-ab-shortcut">⇧⌘K</kbd>';
+
+    $wp_admin_bar->add_node( [
+      'id'    => 'my-sites',
+      'title' => $node->title . $shortcut,
+    ] );
+  }
+
+  /**
    * Enqueue the site switcher script and styles.
    *
    * @return void
@@ -73,6 +95,9 @@ class TPRT_Site_Switcher
     // Hide default dropdown
     add_action( 'wp_head', [$this, 'hide_default_dropdown'] );
     add_action( 'admin_head', [$this, 'hide_default_dropdown'] );
+
+    // Append keyboard shortcut hint to the My Sites admin bar title
+    add_action( 'admin_bar_menu', [$this, 'append_shortcut_to_my_sites'], 999 );
 
     // Register REST endpoint
     add_action( 'rest_api_init', [$this, 'register_rest_routes'] );
