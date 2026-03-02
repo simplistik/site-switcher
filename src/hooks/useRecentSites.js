@@ -1,14 +1,18 @@
 import { useState, useCallback } from '@wordpress/element';
 
 const MAX_RECENT = 5;
+const COOKIE_DAYS = 365;
 
-const getStorageKey = () =>
-  `tprt-ss-recent-${window.tprtSiteSwitcher?.userId || 0}`;
+const getCookieName = () =>
+  `tprt-ss-recent-${ window.tprtSiteSwitcher?.userId || 0 }`;
+
+const getCookieDomain = () => window.tprtSiteSwitcher?.cookieDomain || '';
 
 const readRecent = () => {
   try {
-    const stored = localStorage.getItem( getStorageKey() );
-    return stored ? JSON.parse( stored ) : [];
+    const name = getCookieName();
+    const match = document.cookie.match( new RegExp( `(?:^|;\\s*)${ name }=([^;]+)` ) );
+    return match ? JSON.parse( decodeURIComponent( match[ 1 ] ) ) : [];
   } catch {
     return [];
   }
@@ -16,9 +20,13 @@ const readRecent = () => {
 
 const writeRecent = ( ids ) => {
   try {
-    localStorage.setItem( getStorageKey(), JSON.stringify( ids ) );
+    const expires = new Date();
+    expires.setDate( expires.getDate() + COOKIE_DAYS );
+    const domain = getCookieDomain();
+    const domainAttr = domain ? `;domain=${ domain }` : '';
+    document.cookie = `${ getCookieName() }=${ encodeURIComponent( JSON.stringify( ids ) ) };expires=${ expires.toUTCString() };path=/${ domainAttr };SameSite=Lax`;
   } catch {
-    // localStorage full or unavailable — silently ignore
+    // silently ignore
   }
 };
 
