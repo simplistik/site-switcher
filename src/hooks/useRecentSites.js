@@ -4,14 +4,14 @@ const MAX_RECENT = 5;
 const COOKIE_DAYS = 365;
 
 const getCookieName = () =>
-  `tprt-ss-recent-${ window.tprtSiteSwitcher?.userId || 0 }`;
+  `tprt-ss-recent-${window.tprtSiteSwitcher?.userId || 0}`;
 
 const getCookieDomain = () => window.tprtSiteSwitcher?.cookieDomain || '';
 
 const readRecent = () => {
   try {
     const name = getCookieName();
-    const match = document.cookie.match( new RegExp( `(?:^|;\\s*)${ name }=([^;]+)` ) );
+    const match = document.cookie.match( new RegExp( `(?:^|;\\s*)${name}=([^;]+)` ) );
     return match ? JSON.parse( decodeURIComponent( match[ 1 ] ) ) : [];
   } catch {
     return [];
@@ -23,8 +23,8 @@ const writeRecent = ( ids ) => {
     const expires = new Date();
     expires.setDate( expires.getDate() + COOKIE_DAYS );
     const domain = getCookieDomain();
-    const domainAttr = domain ? `;domain=${ domain }` : '';
-    document.cookie = `${ getCookieName() }=${ encodeURIComponent( JSON.stringify( ids ) ) };expires=${ expires.toUTCString() };path=/${ domainAttr };SameSite=Lax`;
+    const domainAttr = domain ? `;domain=${domain}` : '';
+    document.cookie = `${getCookieName()}=${encodeURIComponent( JSON.stringify( ids ) )};expires=${expires.toUTCString()};path=/${domainAttr};SameSite=Lax`;
   } catch {
     // silently ignore
   }
